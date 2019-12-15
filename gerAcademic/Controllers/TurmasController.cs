@@ -7,135 +7,24 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using gerAcademic.Data;
 using gerAcademic.Models;
+using gerAcademic.Services;
 
 namespace gerAcademic.Controllers
 {
     public class TurmasController : Controller
     {
-        private readonly DataContext _context;
+        private readonly TurmaService _turmaService;
 
-        public TurmasController(DataContext context)
+        public TurmasController(TurmaService turmaService)
         {
-            _context = context;
+            _turmaService = turmaService;
         }
 
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            return View(await _context.Turma.ToListAsync());
+            var list = _turmaService.FindAll();
+            return View(list);
         }
 
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var turma = await _context.Turma
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (turma == null)
-            {
-                return NotFound();
-            }
-
-            return View(turma);
-        }
-
-        public IActionResult Create()
-        {
-            return View();
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Nome")] Turma turma)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(turma);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(turma);
-        }
-
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var turma = await _context.Turma.FindAsync(id);
-            if (turma == null)
-            {
-                return NotFound();
-            }
-            return View(turma);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Nome")] Turma turma)
-        {
-            if (id != turma.Id)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(turma);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!TurmaExists(turma.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(turma);
-        }
-
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var turma = await _context.Turma
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (turma == null)
-            {
-                return NotFound();
-            }
-
-            return View(turma);
-        }
-
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var turma = await _context.Turma.FindAsync(id);
-            _context.Turma.Remove(turma);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
-        private bool TurmaExists(int id)
-        {
-            return _context.Turma.Any(e => e.Id == id);
-        }
     }
 }

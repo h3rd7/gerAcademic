@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using gerAcademic.Models;
+using gerAcademic.Models.ViewModels;
 
 namespace gerAcademic.Controllers
 {
