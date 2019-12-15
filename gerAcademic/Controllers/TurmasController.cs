@@ -20,9 +20,9 @@ namespace gerAcademic.Controllers
             _turmaService = turmaService;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var list = _turmaService.FindAll();
+            var list = await _turmaService.FindAllAsync();
             return View(list);
         }
 

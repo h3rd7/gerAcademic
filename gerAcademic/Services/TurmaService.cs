@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using gerAcademic.Data;
 using gerAcademic.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace gerAcademic.Services
 {
@@ -16,9 +17,9 @@ namespace gerAcademic.Services
             _context = context;
         }
 
-        public List<Turma> FindAll()
+        public async Task<List<Turma>> FindAllAsync()
         {
-            return _context.Turma.ToList();
+            return await _context.Turma.OrderBy(x => x.Nome).ToListAsync();
         }
 
     }
