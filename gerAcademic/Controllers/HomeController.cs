@@ -20,6 +20,8 @@ namespace gerAcademic.Controllers
 
         public IActionResult Index()
         {
+            ViewData["Message"] = message();
+
             return View();
         }
 
@@ -32,6 +34,11 @@ namespace gerAcademic.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        public string message()
+        {
+            return "Mensagem de teste.";
         }
     }
 }
