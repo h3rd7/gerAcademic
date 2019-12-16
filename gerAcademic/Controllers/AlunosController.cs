@@ -25,42 +25,42 @@ namespace gerAcademic.Controllers
             _turmaService = turmaService;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var list = _alunoService.FindAll();
+            var list = await _alunoService.FindAllAsync();
             return View(list);
         }
 
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            var turmas = _turmaService.FindAll();
+            var turmas = await _turmaService.FindAllAsync();
             var viewModel = new AlunoFormViewModel { Turmas = turmas };
             return View(viewModel);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(Aluno aluno)
+        public async Task<IActionResult> Create(Aluno aluno)
         {
             if(!ModelState.IsValid) // verificacao, validando dados
             {
-                var turmas = _turmaService.FindAll();
+                var turmas = await _turmaService.FindAllAsync();
                 var viewModel = new AlunoFormViewModel { Aluno = aluno, Turmas = turmas };
                 return View(viewModel);
             }
 
-            _alunoService.Insert(aluno);
+            await _alunoService.InsertAsync(aluno);
             return RedirectToAction(nameof(Index));
         }
 
-        public IActionResult Delete(int? id)
+        public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
             {
                 return RedirectToAction(nameof(Error), new { message = "Id não fornecido." });
             }
 
-            var aluno = _alunoService.FindById(id.Value);
+            var aluno = await _alunoService.FindByIdAsync(id.Value);
             if (aluno == null)
             {
                 return RedirectToAction(nameof(Error), new { message = "Id não encontrado." });
@@ -71,20 +71,20 @@ namespace gerAcademic.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            _alunoService.Remove(id);
+            await _alunoService.RemoveAsync(id);
             return RedirectToAction(nameof(Index));
         }
 
-        public IActionResult Details(int? id)
+        public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
             {
                 return RedirectToAction(nameof(Error), new { message = "Id não fornecido." });
             }
 
-            var aluno = _alunoService.FindById(id.Value);
+            var aluno = await _alunoService.FindByIdAsync(id.Value);
             if (aluno == null)
             {
                 return RedirectToAction(nameof(Error), new { message = "Id não encontrado." });
@@ -93,31 +93,31 @@ namespace gerAcademic.Controllers
             return View(aluno);
         }
 
-        public IActionResult Edit(int? id)
+        public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
             {
                 return RedirectToAction(nameof(Error), new { message = "Id não fornecido." });
             }
 
-            var aluno = _alunoService.FindById(id.Value);
+            var aluno = await _alunoService.FindByIdAsync(id.Value);
             if (aluno == null)
             {
                 return RedirectToAction(nameof(Error), new { message = "Id não encontrado." });
             }
 
-            List<Turma> turmas = _turmaService.FindAll();
+            List<Turma> turmas = await _turmaService.FindAllAsync();
             AlunoFormViewModel viewModel = new AlunoFormViewModel { Aluno = aluno, Turmas = turmas };
             return View(viewModel);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, Aluno aluno)
+        public async Task <IActionResult> Edit(int id, Aluno aluno)
         {
             if (!ModelState.IsValid) // verificacao, validando dados
             {
-                var turmas = _turmaService.FindAll();
+                var turmas = await _turmaService.FindAllAsync();
                 var viewModel = new AlunoFormViewModel { Aluno = aluno, Turmas = turmas };
                 return View(viewModel);
             }
@@ -128,7 +128,7 @@ namespace gerAcademic.Controllers
             }
             try 
             { 
-                _alunoService.Update(aluno);
+                await _alunoService.UpdateAsync(aluno);
                 return RedirectToAction(nameof(Index));
             }
             catch (ApplicationException e)

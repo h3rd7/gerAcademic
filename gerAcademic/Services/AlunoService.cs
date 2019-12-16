@@ -18,39 +18,40 @@ namespace gerAcademic.Services
             _context = context;
         }
 
-        public List<Aluno> FindAll()
+        public async Task<List<Aluno>> FindAllAsync()
         {
-            return _context.Aluno.Include(x => x.Turma).ToList();
+            return await _context.Aluno.Include(x => x.Turma).ToListAsync();
         }
 
-        public void Insert(Aluno aluno)
+        public async Task InsertAsync(Aluno aluno)
         {
             _context.Add(aluno);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
-        public Aluno FindById(int id)
+        public async Task<Aluno> FindByIdAsync(int id)
         {
-            return _context.Aluno.Include(x => x.Turma).FirstOrDefault(aluno => aluno.Id == id);
+            return await _context.Aluno.Include(x => x.Turma).FirstOrDefaultAsync(aluno => aluno.Id == id);
         }
 
-        public void Remove(int id)
+        public async Task RemoveAsync(int id)
         {
-            var aluno = _context.Aluno.Find(id);
+            var aluno = await _context.Aluno.FindAsync(id);
             _context.Aluno.Remove(aluno);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
-        public void Update(Aluno aluno)
+        public async Task UpdateAsync(Aluno aluno)
         {
-            if (!_context.Aluno.Any(x => x.Id == aluno.Id))
+            bool hasAny = await _context.Aluno.AnyAsync(x => x.Id == aluno.Id);
+            if (!hasAny)
             {
                 throw new NotFoundException("Id não encontrado.");
             }
             try
             {
                 _context.Update(aluno);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException e)
             {
