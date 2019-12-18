@@ -36,9 +36,18 @@ namespace gerAcademic.Services
 
         public async Task RemoveAsync(int id)
         {
-            var aluno = await _context.Aluno.FindAsync(id);
-            _context.Aluno.Remove(aluno);
-            await _context.SaveChangesAsync();
+            try
+            {
+                var aluno = await _context.Aluno.FindAsync(id);
+                _context.Aluno.Remove(aluno);
+                await _context.SaveChangesAsync();
+            }
+            catch(DbUpdateException e)
+            {
+                // throw new IntegrityException(e.Message);
+                throw new IntegrityException("Não posso excluir Aluno porque ele possui avaliações / provas, " 
+                    + "para excluir o mesmo entre em detalhes e exclua suas avaliações");
+            }
         }
 
         public async Task UpdateAsync(Aluno aluno)
